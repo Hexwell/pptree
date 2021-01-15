@@ -81,8 +81,8 @@ def tree_repr(current_node, balanced_branches, name, children):
 
     tr_rpr = lambda node: tree_repr(node, balanced_branches, name, children)
 
-    left = branch_left(map(tr_rpr, sx)) if sx else ()
-    right = branch_right(map(tr_rpr, dx)) if dx else ()
+    left = branch_dir('left', map(tr_rpr, sx)) if sx else ()
+    right = branch_dir('right', map(tr_rpr, dx)) if dx else ()
 
     children_repr = tuple(
         connect_branches(

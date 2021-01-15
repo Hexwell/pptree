@@ -26,21 +26,21 @@ def multijoin(blocks, joiners=()):
     """
 
     # find maximum content width for each block
-    block_content_width = tuple(max(map(len, block), default=0) for block in blocks)
+    block_content_widths = tuple(max(map(len, block), default=0) for block in blocks)
 
     return tuple(
 
         joiner.join(
 
             (string or '')                 # string if present (see fillvalue below)
-            .center(block_content_length)  # normalize content width across block
+            .center(block_content_width)  # normalize content width across block
 
-            for string, block_content_length in zip(block, block_content_width)
+            for string, block_content_width in zip(line, block_content_widths)
 
         )
 
-        for block, joiner in zip(zip_longest(*blocks, fillvalue=None),
-                                 chain(joiners, repeat(DEFAULT_JOINER))) # joiners or default
+        for line, joiner in zip(zip_longest(*blocks, fillvalue=None),
+                                chain(joiners, repeat(DEFAULT_JOINER))) # joiners or default
 
     )
 
@@ -71,22 +71,26 @@ def branch(blocks):
     return multijoin(wired_blocks, (CONNECTION_JOINER,))
 
 
-def branch_left(blocks):
-    last, *rest = blocks
+def branch_dir(blocks, direction):
+    if direction == 'left':
+        direction = -1
+        connector = R_NODE_CONNECTOR
 
-    last = wire(last, R_NODE_CONNECTOR)
+    elif direction == 'right':
+        direction = 1
+        connector = L_NODE_CONNECTOR
+
+    else:
+        raise ValueError('Direction should be left or right')
+
+    blocks = tuple(blocks)
+
+    *rest, last = blocks[::direction]
+
+    last = wire(last, connector)
     rest = branch(rest)
 
-    return multijoin([last, rest], (CONNECTION_JOINER,))
-
-
-def branch_right(blocks):
-    *rest, last = blocks
-
-    rest = branch(rest)
-    last = wire(last, L_NODE_CONNECTOR)
-
-    return multijoin([rest, last], (CONNECTION_JOINER,))
+    return multijoin([rest, last][::direction], (CONNECTION_JOINER,))
 
 
 def connect_branches(left, right):
