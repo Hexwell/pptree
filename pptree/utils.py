@@ -14,6 +14,8 @@ R_BRANCH_CONNECTOR = ' └─'
 L_NODE_CONNECTOR = '─┐ '
 LR_NODE_CONNECTOR = '─┬─'
 R_NODE_CONNECTOR= ' ┌─'
+LEFT = 'l'
+RIGHT = 'r'
 
 
 def multijoin(blocks, joiners=()):
@@ -72,11 +74,11 @@ def branch(blocks):
 
 
 def branch_dir(blocks, direction):
-    if direction == 'left':
+    if direction == LEFT:
         direction = -1
         connector = R_NODE_CONNECTOR
 
-    elif direction == 'right':
+    elif direction == RIGHT:
         direction = 1
         connector = L_NODE_CONNECTOR
 

@@ -49,7 +49,7 @@ def print_tree_horizontally(current_node, balanced_branches, name_getter, indent
     up, down = balanced_branches(current_node)
 
     """ Printing of "up" branch. """
-    for child in up:     
+    for child in up:
         next_last = 'up' if up.index(child) == 0 else ''
         next_indent = '{0}{1}{2}'.format(indent, ' ' if 'up' in last else '│', ' ' * len(name_getter(current_node)))
         print_tree_horizontally(child, balanced_branches, name_getter, next_indent, next_last)
@@ -81,8 +81,8 @@ def tree_repr(current_node, balanced_branches, name, children):
 
     tr_rpr = lambda node: tree_repr(node, balanced_branches, name, children)
 
-    left = branch_dir('left', map(tr_rpr, sx)) if sx else ()
-    right = branch_dir('right', map(tr_rpr, dx)) if dx else ()
+    left = branch_dir(LEFT, map(tr_rpr, sx)) if sx else ()
+    right = branch_dir(RIGHT, map(tr_rpr, dx)) if dx else ()
 
     children_repr = tuple(
         connect_branches(
@@ -92,12 +92,12 @@ def tree_repr(current_node, balanced_branches, name, children):
     )
 
     current_name = name(current_node)
-    
+
     name_len = len(current_name)
     name_l, name_r = name_len // 2, name_len // 2
 
     left_len, right_len = blocklen(left), blocklen(right)
-    
+
     current_name = f"{' ' * (left_len - name_l)}{current_name}{' ' * (right_len - name_r)}"
 
     return multijoin([[current_name, *children_repr]]), (max(left_len, name_l), max(right_len, name_r))
